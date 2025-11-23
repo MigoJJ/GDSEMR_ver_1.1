@@ -31,7 +31,7 @@ public class KCDDatabaseManagerJavaFX {
     private Stage stage;
     public Stage getStage() { return stage; }
 
-    private static final String DB_PATH = "/home/migowj/git/GDSEMR_ver_0.2/app/src/main/resources/database/kcd_database.db";
+    private static final String DB_PATH = "src/main/resources/database/kcd_database.db";
     public static final String JDBC_URL = "jdbc:sqlite:" + DB_PATH;
     private static final DateTimeFormatter ISO_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

@@ -9,7 +9,7 @@
 set -euo pipefail  # Exit on error, unset vars, pipe failures
 
 # --- Configuration ---
-PROJECT_DIR="$HOME/git/GDSEMR_ver_0.2"
+PROJECT_DIR="$HOME/git/GDSEMR_ver_0.3"
 GRADLE_WRAPPER="./gradlew"
 LOG_FILE="$PROJECT_DIR/run.log"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')

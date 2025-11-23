@@ -1,22 +1,6 @@
-// --- Checking Versions ---
-// Ubuntu: Ubuntu 25.04
-// Java: 25
-// JavaFX (Manual SDK): Found at /opt/javafx-25.0.1 (version 25.0.1)
-// Gradle: 9.0.0
-// Git: 2.51.1
-//
-// Eclipse IDE for Enterprise Java and Web Developers (includes Incubating components)
-// Version: 2025-09 (4.37.0)
-// Build id: 20250905-1456
-// -------------------------
-
 plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
-}
-
-repositories {
-    mavenCentral()
 }
 
 java {
@@ -26,67 +10,23 @@ java {
 }
 
 dependencies {
-    // --- Third-party ---
-    implementation 'org.apache.commons:commons-text:1.12.0'
-    implementation 'org.xerial:sqlite-jdbc:3.46.1.0'
-
-    // Logging
-    runtimeOnly 'ch.qos.logback:logback-classic:1.5.6'
-
-    // --- Internal modules ---
-    implementation project(':utilities')
     implementation project(':list')
+    implementation project(':utilities')
 
-    // --- Test ---
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    // TODO: 필요하면 여기 추가 (예: JDBC 등)
+    implementation 'org.xerial:sqlite-jdbc:3.45.3.0'
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.32'
+}
+
+javafx {
+    // 이미 설치해 둔 JavaFX 25 SDK 버전에 맞춰서
+    version = '25.0.1'
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.swing' ]
 }
 
 application {
+    // ✅ 여기는 실제 메-인 클래스 이름으로 수정해야 합니다.
+    // 예시) 'com.emr.gds.main.IttiaEMR' 또는 'com.emr.gds.App'
     mainClass = 'com.emr.gds.IttiaApp'
-
-    // --------------------------------------------------------------
-    // 1. Native-access permissions (required for JavaFX + SQLite)
-    // --------------------------------------------------------------
-    //   * javafx.graphics loads libglass.so
-    //   * sqlite-jdbc loads libsqlitejdbc.so
-    //   * ALL-UNNAMED covers any other unnamed-module native code
-    // --------------------------------------------------------------
-    // NOTE: `applicationDefaultJvmArgs` applies to *every* launch
-    //       (including `gradle run`).  Using `run.jvmArgs` is more
-    //       precise and avoids leaking the flags to other tasks.
-    // --------------------------------------------------------------
-    applicationDefaultJvmArgs = [
-        // Existing reflection opening for your KCD code
-        '--add-opens=javafx.base/com.emr.gds.fourgate.KCDdatabase=ALL-UNNAMED',
-
-        // Native-access permissions
-        '--enable-native-access=javafx.graphics',
-        '--enable-native-access=ALL-UNNAMED'
-    ]
-}
-
-// -----------------------------------------------------------------
-// OPTIONAL: If you prefer to keep the flags *only* for the `run` task
-// -----------------------------------------------------------------
-// run {
-//     jvmArgs = [
-//         '--add-opens=javafx.base/com.emr.gds.fourgate.KCDdatabase=ALL-UNNAMED',
-//         '--enable-native-access=javafx.graphics',
-//         '--enable-native-access=ALL-UNNAMED'
-//     ]
-// }
-
-javafx {
-    version = '25.0.1'
-    modules = [
-        'javafx.controls',
-        'javafx.fxml',
-        'javafx.graphics',
-        'javafx.base',
-        'javafx.swing'
-    ]
-}
-
-test {
-    useJUnitPlatform()
+    applicationDefaultJvmArgs = ['--enable-native-access=javafx.graphics', '--enable-native-access=ALL-UNNAMED']
 }

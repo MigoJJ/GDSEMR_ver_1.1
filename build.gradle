@@ -1,0 +1,12 @@
+// GDSEMR_ver_0.3 - simple multi-module build (no build-logic, no convention plugins)
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+// 루트에서 `./gradlew run` 하면 app 모듈의 run 실행
+tasks.register("run") {
+    dependsOn(":app:run")
+}

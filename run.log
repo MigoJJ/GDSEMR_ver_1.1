@@ -3421,3 +3421,212 @@ BUILD SUCCESSFUL in 10s
 14 actionable tasks: 2 executed, 12 up-to-date
 [0;32m[INFO][0m Gradle task 'run' completed successfully!
 [0;32m[INFO][0m Gradle task 'run' completed successfully!
+===========================================================
+===========================================================
+Gradle Project Runner - 2025-11-23 10:52:43
+Gradle Project Runner - 2025-11-23 10:52:43
+Project: /home/ey/git/GDSEMR_ver_0.3
+Project: /home/ey/git/GDSEMR_ver_0.3
+===========================================================
+===========================================================
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Executing: ./gradlew run
+[0;32m[INFO][0m Executing: ./gradlew run
+Downloading https://services.gradle.org/distributions/gradle-9.0.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+Starting a Gradle Daemon (subsequent builds will be faster)
+Configuration on demand is an incubating feature.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+A problem occurred configuring project ':list'.
+> Could not resolve all dependencies for configuration 'classpath'.
+   > Could not resolve project :build-logic.
+     Required by:
+         buildscript of project ':list'
+      > Failed to calculate the value of task ':build-logic:compileJava' property 'javaCompiler'.
+         > Cannot find a Java installation on your machine (Linux 6.17.0-6-generic amd64) matching: {languageVersion=21, vendor=any vendor, implementation=vendor-specific, nativeImageCapable=false}. Toolchain download repositories have not been configured.
+
+* Try:
+> Learn more about toolchain auto-detection and auto-provisioning at https://docs.gradle.org/9.0.0/userguide/toolchains.html#sec:auto_detection.
+> Learn more about toolchain repositories at https://docs.gradle.org/9.0.0/userguide/toolchains.html#sub:download_repositories.
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 28s
+[0;31m[ERROR][0m Gradle task 'run' failed. See log above.
+===========================================================
+===========================================================
+Gradle Project Runner - 2025-11-23 11:00:39
+Gradle Project Runner - 2025-11-23 11:00:39
+Project: /home/ey/git/GDSEMR_ver_0.3
+Project: /home/ey/git/GDSEMR_ver_0.3
+===========================================================
+===========================================================
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Executing: ./gradlew run
+[0;32m[INFO][0m Executing: ./gradlew run
+Configuration on demand is an incubating feature.
+> Task :build-logic:extractPluginRequests UP-TO-DATE
+> Task :build-logic:generatePluginAdapters UP-TO-DATE
+> Task :build-logic:compileJava UP-TO-DATE
+> Task :build-logic:compileGroovy NO-SOURCE
+> Task :build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :build-logic:pluginDescriptors UP-TO-DATE
+> Task :build-logic:processResources UP-TO-DATE
+> Task :build-logic:classes UP-TO-DATE
+> Task :build-logic:jar UP-TO-DATE
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+A problem occurred configuring project ':list'.
+> Could not resolve all artifacts for configuration 'classpath'.
+   > Failed to transform build-logic.jar (project :build-logic) to match attributes {artifactType=jar, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.internal.instrumented=instrumented-only, org.gradle.jvm.version=25, org.gradle.libraryelements=jar, org.gradle.usage=java-runtime}.
+      > Execution failed for ProjectDependencyInstrumentingArtifactTransform: /home/ey/git/GDSEMR_ver_0.3/build-logic/build/libs/build-logic.jar.
+         > Failed to create Jar file /home/ey/.gradle/caches/9.0.0/transforms/09eddf2c6fe8da9874a33630582499c3-5af57ef4-341a-4b4a-8b43-e3776d0bfc26/transformed/instrumented/instrumented-build-logic.jar.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1s
+7 actionable tasks: 7 up-to-date
+[0;31m[ERROR][0m Gradle task 'run' failed. See log above.
+===========================================================
+===========================================================
+Gradle Project Runner - 2025-11-23 11:02:25
+Gradle Project Runner - 2025-11-23 11:02:25
+Project: /home/ey/git/GDSEMR_ver_0.3
+Project: /home/ey/git/GDSEMR_ver_0.3
+===========================================================
+===========================================================
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Executing: ./gradlew run
+[0;32m[INFO][0m Executing: ./gradlew run
+Configuration on demand is an incubating feature.
+> Task :build-logic:extractPluginRequests UP-TO-DATE
+> Task :build-logic:generatePluginAdapters UP-TO-DATE
+> Task :build-logic:compileJava UP-TO-DATE
+> Task :build-logic:compileGroovy NO-SOURCE
+> Task :build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :build-logic:pluginDescriptors UP-TO-DATE
+> Task :build-logic:processResources UP-TO-DATE
+> Task :build-logic:classes UP-TO-DATE
+> Task :build-logic:jar UP-TO-DATE
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+A problem occurred configuring project ':list'.
+> Could not resolve all artifacts for configuration 'classpath'.
+   > Failed to transform build-logic.jar (project :build-logic) to match attributes {artifactType=jar, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.internal.instrumented=instrumented-only, org.gradle.jvm.version=25, org.gradle.libraryelements=jar, org.gradle.usage=java-runtime}.
+      > Execution failed for ProjectDependencyInstrumentingArtifactTransform: /home/ey/git/GDSEMR_ver_0.3/build-logic/build/libs/build-logic.jar.
+         > Failed to create Jar file /home/ey/.gradle/caches/9.0.0/transforms/09eddf2c6fe8da9874a33630582499c3-79c970cf-32f5-4526-a53d-ba38e6272aca/transformed/instrumented/instrumented-build-logic.jar.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1s
+7 actionable tasks: 7 up-to-date
+[0;31m[ERROR][0m Gradle task 'run' failed. See log above.
+===========================================================
+===========================================================
+Gradle Project Runner - 2025-11-23 11:06:30
+Gradle Project Runner - 2025-11-23 11:06:30
+Project: /home/ey/git/GDSEMR_ver_0.3
+Project: /home/ey/git/GDSEMR_ver_0.3
+===========================================================
+===========================================================
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Executing: ./gradlew run
+[0;32m[INFO][0m Executing: ./gradlew run
+Starting a Gradle Daemon, 2 stopped Daemons could not be reused, use --status for details
+Configuration on demand is an incubating feature.
+
+[Incubating] Problems report is available at: file:///home/ey/git/GDSEMR_ver_0.3/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Settings file '/home/ey/git/GDSEMR_ver_0.3/settings.gradle' line: 16
+
+* What went wrong:
+Error resolving plugin [id: 'org.gradle.toolchains.foojay-resolver-convention', version: '1.0.0']
+> A problem occurred configuring project ':build-logic'.
+   > Groovy DSL script compilation problem
+       Could not compile build file '/home/ey/git/GDSEMR_ver_0.3/build-logic/build.gradle'.
+      > startup failed:
+        build file '/home/ey/git/GDSEMR_ver_0.3/build-logic/build.gradle': 1: Unexpected input: '*' @ line 1, column 1.
+           *
+           ^
+        
+        1 error
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 6s
+[0;31m[ERROR][0m Gradle task 'run' failed. See log above.
+===========================================================
+===========================================================
+Gradle Project Runner - 2025-11-23 11:51:35
+Gradle Project Runner - 2025-11-23 11:51:35
+Project: /home/ey/git/GDSEMR_ver_0.3
+Project: /home/ey/git/GDSEMR_ver_0.3
+===========================================================
+===========================================================
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Starting Gradle build and run...
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Check full log at: /home/ey/git/GDSEMR_ver_0.3/run.log
+[0;32m[INFO][0m Executing: ./gradlew run
+[0;32m[INFO][0m Executing: ./gradlew run
+Configuration on demand is an incubating feature.
+> Task :app:processResources UP-TO-DATE
+> Task :utilities:processResources NO-SOURCE
+> Task :list:compileJava UP-TO-DATE
+> Task :list:processResources NO-SOURCE
+> Task :list:classes UP-TO-DATE
+> Task :list:jar UP-TO-DATE
+> Task :utilities:compileJava UP-TO-DATE
+> Task :utilities:classes UP-TO-DATE
+> Task :utilities:jar UP-TO-DATE
+> Task :app:compileJava UP-TO-DATE
+> Task :app:classes UP-TO-DATE
+
+> Task :app:run
+[DB PATH] abbreviations -> /home/ey/git/GDSEMR_ver_0.3/app/db/abbreviations.db
+[DB PATH] prolist -> /home/ey/git/GDSEMR_ver_0.3/app/db/prolist.db
+Database connection closed.
+
+> Task :run
+
+BUILD SUCCESSFUL in 5s
+7 actionable tasks: 1 executed, 6 up-to-date
+[0;32m[INFO][0m Gradle task 'run' completed successfully!
+[0;32m[INFO][0m Gradle task 'run' completed successfully!
