@@ -148,7 +148,9 @@ public class MedicationHelperApp extends Application {
     private VBox createActionFrame() {
         VBox frame = new VBox(10);
         frame.setPadding(new Insets(12));
-        frame.setPrefWidth(240);
+        frame.setPrefWidth(360);           // ← changed here
+        frame.setMinWidth(300);
+        frame.setMaxWidth(420);
         frame.setStyle("""
                 -fx-background-color: #f7f9fc;
                 -fx-border-color: #dfe3eb;
@@ -287,20 +289,51 @@ public class MedicationHelperApp extends Application {
             return;
         }
 
-        MedicationItem it = activeItem;
+        MedicationItem item = activeItem;
 
-        TextInputDialog d = new TextInputDialog(it.getText());
-        d.setTitle("Edit");
-        d.setHeaderText("New text:");
-        d.showAndWait().ifPresent(nt -> {
-            if (!nt.equals(it.getText())) {
-                it.setText(nt);
+        // Custom wide dialog instead of tiny TextInputDialog
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Edit Medication");
+        dialog.setHeaderText("Edit the medication text below:");
+
+        // Set dialog icon (optional)
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        // stage.getIcons().add(new Image("icon.png")); // if you have one
+
+        ButtonType okButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        // Big text area instead of single line
+        TextArea textArea = new TextArea(item.getText());
+        textArea.setWrapText(true);
+        textArea.setPrefRowCount(4);
+        textArea.setPrefColumnCount(50);  // makes it wide
+        textArea.selectAll();
+
+        // Make dialog resizable and set minimum size
+        dialog.getDialogPane().setContent(textArea);
+        dialog.getDialogPane().setPrefSize(680, 320);   // ← This is the key line!
+        dialog.setResizable(true);
+
+        // Request focus on the text area
+        Platform.runLater(textArea::requestFocus);
+
+        dialog.setResultConverter(btn -> {
+            if (btn == okButtonType) {
+                return textArea.getText().trim();
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(newText -> {
+            if (!newText.equals(item.getText())) {
+                item.setText(newText);
                 lv.refresh();
-                lv.getSelectionModel().select(it);
-                activeItem = it;
-                dbManager.updateMedication(it.getId(), nt);
+                lv.getSelectionModel().select(item);
+                dbManager.updateMedication(item.getId(), newText);
                 btnSave.setDisable(false);
                 updateButtons(lv);
+                selectionLabel.setText(newText);  // update preview
             }
         });
     }
