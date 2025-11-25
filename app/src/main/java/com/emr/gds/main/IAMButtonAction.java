@@ -3,6 +3,7 @@ package com.emr.gds.main;
 import com.emr.gds.IttiaApp;
 import com.emr.gds.main.MedicationHelperApp;
 import com.emr.gds.main.ThyroidDisordersApp;
+import com.emr.gds.main.glp1.Glp1SemaglutideMain;
 import com.emr.gds.input.IAITextAreaManager;
 
 import javafx.application.Application;
@@ -149,6 +150,7 @@ public class IAMButtonAction {
         tb.getItems().add(createKCD9Button("KCD-9")); // KCD-9 button creation
         tb.getItems().add(createThyroidButton("Thyroid"));
         tb.getItems().add(createMedicationHelperButton("Medication Helper"));
+        tb.getItems().add(createGlp1Button("GLP-1"));
         tb.setPadding(new Insets(9, 0, 0, 0));
         return tb;
     }
@@ -289,6 +291,21 @@ public class IAMButtonAction {
                 }
             });
         });
+        return b;
+    }
+
+    private Button createGlp1Button(String title) {
+        Button b = new Button(title);
+        b.setOnAction(e -> Platform.runLater(() -> {
+            try {
+                Glp1SemaglutideMain glp1App = new Glp1SemaglutideMain();
+                Stage glp1Stage = new Stage();
+                glp1App.start(glp1Stage);
+            } catch (Exception ex) {
+                System.err.println("Failed to open GLP-1 application: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }));
         return b;
     }
     
