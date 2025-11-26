@@ -3,6 +3,7 @@ package com.emr.gds.main;
 import com.emr.gds.IttiaApp;
 import com.emr.gds.main.MedicationHelperApp;
 import com.emr.gds.main.ThyroidDisordersApp;
+import com.emr.gds.main.glp1.Glp1SemaglutideMain;
 import com.emr.gds.input.IAITextAreaManager;
 
 import javafx.application.Application;
@@ -296,23 +297,16 @@ public class IAMButtonAction {
 
     private Button createGlp1Button(String title) {
         Button b = new Button(title);
-        b.setOnAction(e -> {
-            Platform.runLater(() -> {
-                try {
-                    Stage glp1Stage = new Stage();
-                    glp1Stage.setTitle("GLP-1RA (Semaglutide) Manager");
-                    
-                    Glp1SemaglutidePane pane = new Glp1SemaglutidePane();
-                    Scene scene = new Scene(pane, 550, 700);
-                    
-                    glp1Stage.setScene(scene);
-                    glp1Stage.show();
-                } catch (Exception ex) {
-                    System.err.println("Failed to open GLP-1 application: " + ex.getMessage());
-                    ex.printStackTrace();
-                }
-            });
-        });
+        b.setOnAction(e -> Platform.runLater(() -> {
+            try {
+                Glp1SemaglutideMain glp1App = new Glp1SemaglutideMain();
+                Stage glp1Stage = new Stage();
+                glp1App.start(glp1Stage);
+            } catch (Exception ex) {
+                System.err.println("Failed to open GLP-1 application: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }));
         return b;
     }
     
