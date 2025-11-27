@@ -16,8 +16,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
@@ -95,7 +98,10 @@ public class IAMButtonAction {
                   .collect(Collectors.toList())
         );
 
-        // 2. Individual Buttons
+        // 2. Settings Menu
+        MenuButton settingsMenu = createSettingsMenu();
+
+        // 3. Individual Buttons
         Button btnInsertDate = new Button(INSERT_DATE_BUTTON_TEXT);
         btnInsertDate.setOnAction(e -> {
             String currentDateString = " [ " + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " ]";
@@ -114,14 +120,16 @@ public class IAMButtonAction {
         Button btnClearAll = new Button(CLEAR_ALL_BUTTON_TEXT);
         btnClearAll.setOnAction(e -> app.clearAllText());
 
-        // 3. Layout Helpers
+        // 4. Layout Helpers
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         Label hint = new Label(HINT_LABEL_TEXT);
 
-        // 4. Assemble Toolbar
+        // 5. Assemble Toolbar
         return new ToolBar(
             templatesMenu,
+            settingsMenu,
+            new Separator(),
             btnInsertDate,
             new Separator(),
             btnFormat,
@@ -131,6 +139,71 @@ public class IAMButtonAction {
             spacer,
             hint
         );
+    }
+
+    private MenuButton createSettingsMenu() {
+        MenuButton menu = new MenuButton("Settings");
+
+        // Font Size Submenu
+        Menu fontSizeMenu = new Menu("Font Size");
+        ToggleGroup fontGroup = new ToggleGroup();
+
+        RadioMenuItem small = new RadioMenuItem("Small");
+        small.setToggleGroup(fontGroup);
+        small.setOnAction(e -> updateRootStyleClass("font-small"));
+
+        RadioMenuItem medium = new RadioMenuItem("Medium");
+        medium.setToggleGroup(fontGroup);
+        medium.setSelected(true);
+        medium.setOnAction(e -> updateRootStyleClass("font-medium"));
+
+        RadioMenuItem large = new RadioMenuItem("Large");
+        large.setToggleGroup(fontGroup);
+        large.setOnAction(e -> updateRootStyleClass("font-large"));
+
+        RadioMenuItem xlarge = new RadioMenuItem("Extra Large");
+        xlarge.setToggleGroup(fontGroup);
+        xlarge.setOnAction(e -> updateRootStyleClass("font-xlarge"));
+
+        fontSizeMenu.getItems().addAll(small, medium, large, xlarge);
+
+        // Theme Submenu
+        Menu themeMenu = new Menu("Theme");
+        ToggleGroup themeGroup = new ToggleGroup();
+
+        RadioMenuItem light = new RadioMenuItem("Light (Default)");
+        light.setToggleGroup(themeGroup);
+        light.setSelected(true);
+        light.setOnAction(e -> updateRootTheme(""));
+
+        RadioMenuItem dark = new RadioMenuItem("Dark");
+        dark.setToggleGroup(themeGroup);
+        dark.setOnAction(e -> updateRootTheme("dark-theme"));
+
+        themeMenu.getItems().addAll(light, dark);
+
+        menu.getItems().addAll(fontSizeMenu, themeMenu);
+        return menu;
+    }
+
+    private void updateRootStyleClass(String className) {
+        Scene scene = app.getPrimaryStage().getScene();
+        if (scene != null) {
+            scene.getRoot().getStyleClass().removeAll("font-small", "font-medium", "font-large", "font-xlarge");
+            if (!className.isEmpty()) {
+                scene.getRoot().getStyleClass().add(className);
+            }
+        }
+    }
+
+    private void updateRootTheme(String className) {
+        Scene scene = app.getPrimaryStage().getScene();
+        if (scene != null) {
+            scene.getRoot().getStyleClass().removeAll("dark-theme");
+            if (!className.isEmpty()) {
+                scene.getRoot().getStyleClass().add(className);
+            }
+        }
     }
 
     /**

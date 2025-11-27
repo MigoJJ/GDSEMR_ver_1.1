@@ -204,6 +204,9 @@ public class IttiaApp extends Application {
             BorderPane root = buildRootLayout();
             Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
             
+            // Load the CSS stylesheet
+            scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
+            
             mainStage.setTitle(APP_TITLE);
             mainStage.setScene(scene);
             mainStage.show();
@@ -213,6 +216,10 @@ public class IttiaApp extends Application {
         } catch (Exception e) {
             showFatalError("Application Startup Error", "Failed to start the application.", e);
         }
+    }
+
+    public Stage getPrimaryStage() {
+        return mainStage;
     }
 
     /**
