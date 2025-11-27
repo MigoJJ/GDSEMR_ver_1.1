@@ -151,7 +151,7 @@ public class IAMButtonAction {
         // Add any special-purpose buttons that don't come from the template library
         tb.getItems().add(createVaccineButton("Vaccine"));
         tb.getItems().add(createKCD9Button("KCD-9")); // KCD-9 button creation
-        tb.getItems().add(createThyroidButton("Thyroid"));
+//        tb.getItems().add(createThyroidButton("Thyroid"));
         tb.getItems().add(createMedicationHelperButton("Medication Helper"));
         tb.getItems().add(createGlp1Button("GLP-1"));
         tb.setPadding(new Insets(9, 0, 0, 0));

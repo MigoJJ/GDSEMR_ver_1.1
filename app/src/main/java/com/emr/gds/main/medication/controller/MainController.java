@@ -297,7 +297,7 @@ public class MainController {
         Parent root = FXMLLoader.load(getClass().getResource("/com/emr/gds/main/medication/launcher.fxml"));
         Stage stage = (Stage) mainTabPane.getScene().getWindow();
         stage.setScene(new Scene(root));
-        stage.setWidth(250);
+        stage.setWidth(1250);
         stage.setHeight(600);
         stage.setX(javafx.stage.Screen.getPrimary().getVisualBounds().getWidth() - 250);
         stage.setY(0);

@@ -54,7 +54,7 @@ public class LauncherController {
             controller.setSelectedCategory(category);
 
             Stage stage = (Stage) categoryContainer.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 720));
+            stage.setScene(new Scene(root, 1500, 720));
             stage.setTitle("EMR Helper – " + category);
             stage.centerOnScreen();
         } catch (IOException ex) {

@@ -385,9 +385,14 @@ public class IttiaApp extends Application {
                     ex.printStackTrace();
                 }
             });
+
+            Button thyroidButton = new Button("Thyroid");
+            thyroidButton.setOnAction(e -> com.emr.gds.main.thyroid.ThyroidEntry.main(null));
             
             bottomBar.getItems().add(new Separator());
             bottomBar.getItems().add(categoryButton);
+            bottomBar.getItems().add(new Separator());
+            bottomBar.getItems().add(thyroidButton);
             
             return bottomBar;
         } catch (Exception e) {
