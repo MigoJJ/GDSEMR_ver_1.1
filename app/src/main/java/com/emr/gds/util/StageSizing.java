@@ -22,9 +22,13 @@ public final class StageSizing {
     }
 
     public static void fitToScreen(Stage stage, double widthRatio, double heightRatio) {
+        fitToScreen(stage, widthRatio, heightRatio, MIN_WIDTH, MIN_HEIGHT);
+    }
+
+    public static void fitToScreen(Stage stage, double widthRatio, double heightRatio, double minWidth, double minHeight) {
         Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-        double effectiveMinWidth = Math.min(MIN_WIDTH, bounds.getWidth());
-        double effectiveMinHeight = Math.min(MIN_HEIGHT, bounds.getHeight());
+        double effectiveMinWidth = Math.min(minWidth, bounds.getWidth());
+        double effectiveMinHeight = Math.min(minHeight, bounds.getHeight());
 
         double width = clamp(bounds.getWidth() * widthRatio, effectiveMinWidth, bounds.getWidth());
         double height = clamp(bounds.getHeight() * heightRatio, effectiveMinHeight, bounds.getHeight());

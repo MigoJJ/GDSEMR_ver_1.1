@@ -57,7 +57,7 @@ public class LauncherController {
             Stage stage = (Stage) categoryContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("EMR Helper – " + category);
-            StageSizing.fitToScreen(stage);
+            StageSizing.fitToScreen(stage, 0.8, 0.9, 1100, 700);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

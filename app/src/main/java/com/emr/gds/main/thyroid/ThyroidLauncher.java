@@ -33,7 +33,8 @@ public final class ThyroidLauncher {
         Stage stage = new Stage();
         stage.setTitle("Thyroid Pregnancy");
         stage.setScene(new Scene(root));
-        StageSizing.fitToScreen(stage);
+        // Reduced width to ~60% of screen (15% reduction from default 0.7)
+        StageSizing.fitToScreen(stage, 0.6, 0.9);
         stage.show();
     }
 }

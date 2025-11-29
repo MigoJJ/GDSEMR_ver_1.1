@@ -159,7 +159,7 @@ public class ThyroidPregnancy extends BorderPane {
         VBox.setVgrow(root.getChildren().get(0), Priority.ALWAYS);
         
         stage.setScene(new Scene(root));
-        stage.setWidth(900);
+        stage.setWidth(400);
         stage.setHeight(600);
         stage.show();
     }
@@ -499,7 +499,8 @@ public class ThyroidPregnancy extends BorderPane {
         ThyroidPregnancy root = new ThyroidPregnancy();
         stage.setTitle("Thyroid Pregnancy");
         stage.setScene(new Scene(root));
-        StageSizing.fitToScreen(stage);
+        // Reduced width to ~60% of screen
+        StageSizing.fitToScreen(stage, 0.6, 0.9);
         stage.show();
     }
 }
