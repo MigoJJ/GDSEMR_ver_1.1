@@ -33,6 +33,11 @@ import javafx.scene.text.Font;
  */
 public class IAMTextArea {
 
+    public enum Theme {
+        SUNSET,
+        GRADIENT
+    }
+
     // ================================ 
     // Constants
     // ================================ 
@@ -86,15 +91,19 @@ public class IAMTextArea {
     // Instance Variables
     // ================================ 
     private final List<TextArea> areas = new ArrayList<>(10);
+    private final List<TextAreaStyleSet> styleSets = new ArrayList<>(10);
     private TextArea lastFocusedArea = null;
     private final Map<String, String> abbrevMap;
     private final IAMProblemAction problemAction;
     private final Map<Integer, TextAreaDoubleClickHandler> doubleClickHandlers = new HashMap<>();
+    private Theme currentTheme = Theme.SUNSET;
 
     @FunctionalInterface
     public interface TextAreaDoubleClickHandler {
         void handle(TextArea textArea, int areaIndex);
     }
+
+    private record TextAreaStyleSet(String unfocused, String focused, String hover) { }
 
     // ================================ 
     // Constructor
@@ -103,6 +112,7 @@ public class IAMTextArea {
         this.abbrevMap = Objects.requireNonNull(abbrevMap, "abbrevMap");
         this.problemAction = Objects.requireNonNull(problemAction, "problemAction");
         initializeDoubleClickHandlers();
+        setTheme(Theme.SUNSET);
         initializeTextAreas();
     }
 
@@ -136,13 +146,85 @@ public class IAMTextArea {
             TextArea ta = createStyledTextArea(i);
 
             // Add listeners for focus, hover, and input events
-            addFocusAndHoverListeners(ta);
+            addFocusAndHoverListeners(ta, idx);
             addScratchpadListener(ta, idx);
             TextAreaControlProcessor.applyStandardProcessing(ta, abbrevMap);
             addDoubleClickListener(ta, idx);
 
             areas.add(ta);
         }
+    }
+
+    /**
+     * Switches the visual theme for the text areas.
+     */
+    public void setTheme(Theme theme) {
+        currentTheme = Objects.requireNonNull(theme, "theme");
+        rebuildStyleSets(theme);
+        if (!areas.isEmpty()) {
+            applyStylesToExistingAreas();
+        }
+    }
+
+    private void rebuildStyleSets(Theme theme) {
+        styleSets.clear();
+        int count = TEXT_AREA_TITLES.length;
+        for (int i = 0; i < count; i++) {
+            if (theme == Theme.GRADIENT) {
+                styleSets.add(buildGradientStyleSet(i));
+            } else {
+                styleSets.add(buildSunsetStyleSet());
+            }
+        }
+    }
+
+    private void applyStylesToExistingAreas() {
+        for (int i = 0; i < Math.min(areas.size(), styleSets.size()); i++) {
+            TextArea ta = areas.get(i);
+            TextAreaStyleSet styles = styleSets.get(i);
+            ta.setStyle(ta.isFocused() ? styles.focused() : styles.unfocused());
+        }
+    }
+
+    private TextAreaStyleSet buildSunsetStyleSet() {
+        return new TextAreaStyleSet(STYLE_UNFOCUSED, STYLE_FOCUSED, STYLE_HOVER);
+    }
+
+    private TextAreaStyleSet buildGradientStyleSet(int index) {
+        int greenBase = clampColor(255 - index * 10);
+
+        String unfocusedBg = cssRgb(255, greenBase, 0);
+        String hoverBg = cssRgb(255, clampColor(greenBase - 8), 18);
+        String focusedBg = cssRgb(255, clampColor(greenBase - 16), 30);
+
+        return new TextAreaStyleSet(
+                styleString(unfocusedBg, "#b45309", 1.5, "dropshadow(gaussian, rgba(180,83,9,0.30), 6, 0.35, 0, 1)"),
+                styleString(focusedBg, "#9a3412", 3.0, "dropshadow(gaussian, rgba(154,52,18,0.45), 12, 0.25, 0, 2)"),
+                styleString(hoverBg, "#c2410c", 2.0, "dropshadow(gaussian, rgba(194,65,12,0.32), 10, 0.28, 0, 1)")
+        );
+    }
+
+    private String styleString(String background, String borderColor, double borderWidth, String effect) {
+        return String.format(
+                "-fx-background-color: %s;" +
+                "-fx-text-fill: #0A2540;" +
+                "-fx-border-color: %s;" +
+                "-fx-border-width: %.1f;" +
+                "-fx-background-insets: 0;" +
+                "-fx-background-radius: 9;" +
+                "-fx-border-radius: 9;" +
+                "-fx-effect: %s;" +
+                BASE_TEXT_TWEAKS,
+                background, borderColor, borderWidth, effect
+        );
+    }
+
+    private String cssRgb(int r, int g, int b) {
+        return String.format("rgb(%d, %d, %d)", clampColor(r), clampColor(g), clampColor(b));
+    }
+
+    private int clampColor(int value) {
+        return Math.max(0, Math.min(255, value));
     }
 
     /**
@@ -155,7 +237,7 @@ public class IAMTextArea {
         ta.setPrefRowCount(11);
         ta.setPrefColumnCount(58);
         ta.setPromptText(index < TEXT_AREA_TITLES.length ? TEXT_AREA_TITLES[index] : "Area " + (index + 1));
-        ta.setStyle(STYLE_UNFOCUSED);
+        ta.setStyle(styleSets.get(index).unfocused());
         ta.setTextFormatter(new TextFormatter<>(IAMTextFormatUtil.filterControlChars()));
         return ta;
     }
@@ -185,17 +267,22 @@ public class IAMTextArea {
     // Event Listener Setup
     // ================================ 
 
-    private void addFocusAndHoverListeners(TextArea ta) {
+    private void addFocusAndHoverListeners(TextArea ta, int idx) {
         ta.focusedProperty().addListener((obs, was, is) -> {
-            ta.setStyle(is ? STYLE_FOCUSED : STYLE_UNFOCUSED);
+            TextAreaStyleSet styles = styleSets.get(idx);
+            ta.setStyle(is ? styles.focused() : styles.unfocused());
             if (is) lastFocusedArea = ta;
         });
 
         ta.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
-            if (!ta.isFocused()) ta.setStyle(STYLE_HOVER);
+            if (!ta.isFocused()) {
+                ta.setStyle(styleSets.get(idx).hover());
+            }
         });
         ta.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
-            if (!ta.isFocused()) ta.setStyle(STYLE_UNFOCUSED);
+            if (!ta.isFocused()) {
+                ta.setStyle(styleSets.get(idx).unfocused());
+            }
         });
     }
 

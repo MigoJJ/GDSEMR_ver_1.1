@@ -175,13 +175,17 @@ public class IAMButtonAction {
         RadioMenuItem light = new RadioMenuItem("Light (Default)");
         light.setToggleGroup(themeGroup);
         light.setSelected(true);
-        light.setOnAction(e -> updateRootTheme(""));
+        light.setOnAction(e -> updateTheme("", IAMTextArea.Theme.SUNSET));
 
         RadioMenuItem dark = new RadioMenuItem("Dark");
         dark.setToggleGroup(themeGroup);
-        dark.setOnAction(e -> updateRootTheme("dark-theme"));
+        dark.setOnAction(e -> updateTheme("dark-theme", IAMTextArea.Theme.SUNSET));
 
-        themeMenu.getItems().addAll(light, dark);
+        RadioMenuItem gradient = new RadioMenuItem("Gradient");
+        gradient.setToggleGroup(themeGroup);
+        gradient.setOnAction(e -> updateTheme("gradient-theme", IAMTextArea.Theme.GRADIENT));
+
+        themeMenu.getItems().addAll(light, dark, gradient);
 
         menu.getItems().addAll(fontSizeMenu, themeMenu);
         return menu;
@@ -197,10 +201,15 @@ public class IAMButtonAction {
         }
     }
 
+    private void updateTheme(String className, IAMTextArea.Theme textAreaTheme) {
+        updateRootTheme(className);
+        app.applyTextAreaTheme(textAreaTheme);
+    }
+
     private void updateRootTheme(String className) {
         Scene scene = app.getPrimaryStage().getScene();
         if (scene != null) {
-            scene.getRoot().getStyleClass().removeAll("dark-theme");
+            scene.getRoot().getStyleClass().removeAll("dark-theme", "gradient-theme");
             if (!className.isEmpty()) {
                 scene.getRoot().getStyleClass().add(className);
             }

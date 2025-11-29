@@ -246,7 +246,8 @@ public class ThyroidPregnancy extends VBox {
         Stage stage = new Stage();
         ThyroidPregnancy root = new ThyroidPregnancy();
         stage.setTitle("Thyroid Pregnancy");
-        stage.setScene(new Scene(root, 620, 720));
+        stage.setScene(new Scene(root));
+        StageSizing.fitToScreen(stage);
         stage.show();
     }
 }

@@ -14,9 +14,7 @@ public class MedicationCategory extends Application {
         Parent root = loader.load();
         primaryStage.setTitle("EMR Medication Helper");
         primaryStage.setScene(new Scene(root));
-        primaryStage.setWidth(800);
-        primaryStage.setHeight(800);
-        primaryStage.centerOnScreen();
+        StageSizing.fitToScreen(primaryStage);
         primaryStage.show();
     }
 

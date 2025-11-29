@@ -79,8 +79,8 @@ public class ThyroidDisordersApp extends Application {
         scrollPane.setFitToWidth(true); // Allow content to expand to the width of the scroll pane
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Show vertical scrollbar only when needed
 
-        Scene scene = new Scene(scrollPane, 800, 600); // Initial window size
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(scrollPane));
+        StageSizing.fitToScreen(primaryStage);
         primaryStage.show();
     }
 

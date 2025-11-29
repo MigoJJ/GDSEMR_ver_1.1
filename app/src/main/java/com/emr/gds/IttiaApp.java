@@ -709,6 +709,12 @@ public class IttiaApp extends Application {
     // Getters for Component Access
     // ================================
 
+    public void applyTextAreaTheme(IAMTextArea.Theme theme) {
+        if (textAreaManager != null) {
+            textAreaManager.setTheme(theme);
+        }
+    }
+
     public IAMTextArea getTextAreaManager() {
         return textAreaManager;
     }
