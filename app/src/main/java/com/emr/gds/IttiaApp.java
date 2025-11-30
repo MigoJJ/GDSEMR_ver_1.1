@@ -3,6 +3,7 @@ package com.emr.gds;
 import com.emr.gds.main.imaging.ChestXrayReviewStage;
 import com.emr.gds.main.bone.DexaRiskAssessmentApp;
 import com.emr.gds.main.ekg.EkgSimpleReportApp;
+import com.emr.gds.main.ekg.EkgQuickInterpreter;
 import com.emr.gds.input.IAIFreqFrame;
 import com.emr.gds.input.IAIFxTextAreaManager;
 import com.emr.gds.input.IAIMain;
@@ -337,6 +338,10 @@ public class IttiaApp extends Application {
         ekgButton.getStyleClass().add("button-accent");
         ekgButton.setOnAction(e -> EkgSimpleReportApp.open());
         
+        Button ekgQuickButton = new Button("EKG Quick");
+        ekgQuickButton.getStyleClass().add("button-accent");
+        ekgQuickButton.setOnAction(e -> EkgQuickInterpreter.open());
+        
         Button cpaButton = new Button("Chest X-ray");
         cpaButton.getStyleClass().add("button-accent");
         cpaButton.setOnAction(event -> {
@@ -360,7 +365,7 @@ public class IttiaApp extends Application {
             new Separator(), categoryButton,
             new Separator(), 
             new Label("Diagnostics:"), // Group Label
-            dexaButton, ekgButton, cpaButton
+            dexaButton, ekgButton, ekgQuickButton, cpaButton
         );
         return topBar;
     }

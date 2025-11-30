@@ -32,26 +32,29 @@ public class ThyroidEntry implements Serializable {
     }
 
     public enum Symptom {
-        HYPER_NERVOUSNESS("Hyperthyroidism: Nervousness, anxiety, and irritability"),
-        HYPER_PALPITATIONS("Hyperthyroidism: Rapid or irregular heartbeat (palpitations)"),
-        HYPER_WEIGHT_LOSS("Hyperthyroidism: Weight loss despite normal/increased appetite"),
-        HYPER_HEAT_INTOLERANCE("Hyperthyroidism: Sensitivity to heat and increased sweating"),
-        HYPER_TREMORS("Hyperthyroidism: Tremors (shaking hands) and muscle weakness"),
-        HYPER_INSOMNIA("Hyperthyroidism: Difficulty sleeping (insomnia)"),
-        HYPER_BOWEL("Hyperthyroidism: Frequent bowel movements"),
-        HYPER_MENSES_LIGHT("Hyperthyroidism: Changes in menstrual cycles (lighter/less frequent)"),
-        HYPO_FATIGUE("Hypothyroidism: Fatigue and lethargy"),
-        HYPO_COLD("Hypothyroidism: Sensitivity to cold"),
-        HYPO_WEIGHT_GAIN("Hypothyroidism: Unexplained weight gain"),
-        HYPO_CONSTIPATION("Hypothyroidism: Constipation"),
-        HYPO_DRY_SKIN_HAIR("Hypothyroidism: Dry skin and thinning/brittle hair"),
-        HYPO_PUFFY_FACE("Hypothyroidism: Puffy face and hoarseness"),
-        HYPO_SLOWED_HEART("Hypothyroidism: Slowed heart rate"),
-        HYPO_DEPRESSION("Hypothyroidism: Depression and impaired memory"),
-        HYPO_HEAVY_MENSES("Hypothyroidism: Heavy or irregular menstrual periods"),
-        GENERAL_GOITER("General/Other: Goiter (enlarged thyroid gland) - can occur in both"),
-        GENERAL_NODULES("General/Other: Thyroid Nodules (lumps in neck)"),
-        GENERAL_EYE_PROBLEMS("General/Other: Eye problems (bulging/redness) - specific to Graves' disease");
+        HYPER_NERVOUSNESS    ("\t[ ✔️ ] Nervousness, anxiety, and irritability\n"),
+        HYPER_PALPITATIONS   ("\t[ ✔️ ] Rapid or irregular heartbeat (palpitations)\n"),
+        HYPER_WEIGHT_LOSS    ("\t[ ✔️ ] Weight loss despite normal/increased appetite\n"),
+        HYPER_HEAT_INTOLERANCE("\t[ ✔️ ] Sensitivity to heat and increased sweating\n"),
+        HYPER_TREMORS        ("\t[ ✔️ ] Tremors (shaking hands) and muscle weakness\n"),
+        HYPER_INSOMNIA       ("\t[ ✔️ ] Difficulty sleeping (insomnia)\n"),
+        HYPER_BOWEL          ("\t[ ✔️ ] Frequent bowel movements\n"),
+        HYPER_MENSES_LIGHT   ("\t[ ✔️ ] Changes in menstrual cycles (lighter/less frequent)\n"),
+
+        HYPO_FATIGUE         ("\t[ ✔️ ] Fatigue and lethargy\n"),
+        HYPO_COLD            ("\t[ ✔️ ] Sensitivity to cold\n"),
+        HYPO_WEIGHT_GAIN     ("\t[ ✔️ ] Unexplained weight gain\n"),
+        HYPO_CONSTIPATION    ("\t[ ✔️ ] Constipation\n"),
+        HYPO_DRY_SKIN_HAIR   ("\t[ ✔️ ] Dry skin and thinning/brittle hair\n"),
+        HYPO_PUFFY_FACE      ("\t[ ✔️ ] Puffy face and hoarseness\n"),
+        HYPO_SLOWED_HEART    ("\t[ ✔️ ] Slowed heart rate\n"),
+        HYPO_DEPRESSION      ("\t[ ✔️ ] Depression and impaired memory\n"),
+        HYPO_HEAVY_MENSES    ("\t[ ✔️ ] Heavy or irregular menstrual periods\n"),
+
+        GENERAL_GOITER       ("\t[ ✔️ ] Goiter (enlarged thyroid gland) - can occur in both\n"),
+        GENERAL_NODULES      ("\t[ ✔️ ] Thyroid Nodules (lumps in neck)\n"),
+        GENERAL_EYE_PROBLEMS ("\t[ ✔️ ] Eye problems (bulging/redness) - specific to Graves' disease\n");
+
 
         private final String label;
 

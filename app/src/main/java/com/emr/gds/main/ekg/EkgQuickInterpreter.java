@@ -2,116 +2,153 @@ package com.emr.gds.main.ekg;
 
 import com.emr.gds.input.IAIMain;
 import com.emr.gds.input.IAITextAreaManager;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.border.EmptyBorder;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * SimpleEKGInterpreter - Ultra-fast EKG reporting tool
  * Replaces old EKG.java - Doctor-approved, minimal clicks
  */
-public class EkgQuickInterpreter extends JFrame {
+public class EkgQuickInterpreter extends Stage {
 
-    private final JTextArea findingsArea = new JTextArea(10, 30);
-    private final JTextArea impressionArea = new JTextArea(4, 30);
-    private final JTextArea commentsArea = new JTextArea(3, 30);
+    private static EkgQuickInterpreter active;
+
+    private final TextArea findingsArea = new TextArea();
+    private final TextArea impressionArea = new TextArea();
+    private final TextArea commentsArea = new TextArea();
 
     public EkgQuickInterpreter() {
         setTitle("Quick EKG Interpreter - EMR Ready");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(600, 500);
-        setLocationRelativeTo(null);
-        buildUI();
+        initModality(Modality.NONE);
+        setScene(new Scene(buildUI(), 820, 560));
     }
 
-    private void buildUI() {
-        JPanel root = new JPanel(new BorderLayout(10, 10));
-        root.setBorder(new EmptyBorder(10, 10, 10, 10));
+    public static void open() {
+        if (active != null && active.isShowing()) {
+            active.toFront();
+            return;
+        }
+        active = new EkgQuickInterpreter();
+        active.show();
+        active.setOnHidden(e -> active = null);
+    }
 
-        // Left: predefined snippets
-        JPanel left = new JPanel();
-        left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
-        left.add(new JLabel("Quick Snippets"));
-        left.add(Box.createVerticalStrut(5));
+    private BorderPane buildUI() {
+        findingsArea.setPromptText("Findings");
+        impressionArea.setPromptText("Impression");
+        commentsArea.setPromptText("Comments");
+        findingsArea.setWrapText(true);
+        impressionArea.setWrapText(true);
+        commentsArea.setWrapText(true);
 
-        addSnippetButton(left, "Normal sinus rhythm", "Normal sinus rhythm");
-        addSnippetButton(left, "LVH", "Left ventricular hypertrophy criteria met");
-        addSnippetButton(left, "AF", "Atrial fibrillation with controlled ventricular response");
-        addSnippetButton(left, "RBBB", "Right bundle branch block");
-        addSnippetButton(left, "Old MI", "Findings consistent with prior MI");
-        addSnippetButton(left, "Ischemia", "Non-specific ST-T changes suggestive of ischemia");
-        left.add(Box.createVerticalGlue());
+        BorderPane root = new BorderPane();
+        root.setPadding(new Insets(12));
+        root.setLeft(buildSnippetPane());
+        root.setCenter(buildEditorPane());
+        root.setBottom(buildActions());
+        return root;
+    }
 
-        // Center: input areas
-        JPanel center = new JPanel();
-        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-        center.add(labeledArea("Findings", findingsArea));
-        center.add(Box.createVerticalStrut(10));
-        center.add(labeledArea("Impression", impressionArea));
-        center.add(Box.createVerticalStrut(10));
-        center.add(labeledArea("Comments", commentsArea));
+    private VBox buildSnippetPane() {
+        VBox snippetBox = new VBox(8);
+        snippetBox.setPadding(new Insets(8));
+        snippetBox.setPrefWidth(220);
 
-        // Bottom: actions
-        JButton saveBtn = new JButton("Save to EMR");
-        saveBtn.addActionListener(e -> saveToEmr());
+        Label header = new Label("Quick Snippets");
+        header.getStyleClass().add("section-title");
+        snippetBox.getChildren().add(header);
 
-        JButton clearBtn = new JButton("Clear");
-        clearBtn.addActionListener(e -> {
-            findingsArea.setText("");
-            impressionArea.setText("");
-            commentsArea.setText("");
+        addSnippetButton(snippetBox, "Normal sinus rhythm", "Normal sinus rhythm");
+        addSnippetButton(snippetBox, "LVH", "Left ventricular hypertrophy criteria met");
+        addSnippetButton(snippetBox, "AF", "Atrial fibrillation with controlled ventricular response");
+        addSnippetButton(snippetBox, "RBBB", "Right bundle branch block");
+        addSnippetButton(snippetBox, "Old MI", "Findings consistent with prior MI");
+        addSnippetButton(snippetBox, "Ischemia", "Non-specific ST-T changes suggestive of ischemia");
+
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        snippetBox.getChildren().add(spacer);
+        return snippetBox;
+    }
+
+    private VBox buildEditorPane() {
+        VBox editor = new VBox(12);
+        editor.setPadding(new Insets(8, 0, 0, 12));
+        editor.getChildren().add(labeledArea("Findings", findingsArea, 180));
+        editor.getChildren().add(labeledArea("Impression", impressionArea, 120));
+        editor.getChildren().add(labeledArea("Comments", commentsArea, 100));
+        return editor;
+    }
+
+    private VBox labeledArea(String label, TextArea area, double minHeight) {
+        area.setMinHeight(minHeight);
+        ScrollPane scroll = new ScrollPane(area);
+        scroll.setFitToWidth(true);
+        scroll.setFitToHeight(true);
+        scroll.setPrefHeight(minHeight + 40);
+
+        VBox box = new VBox(6);
+        box.getChildren().addAll(new Label(label), scroll);
+        VBox.setVgrow(scroll, Priority.ALWAYS);
+        return box;
+    }
+
+    private HBox buildActions() {
+        Button clearBtn = new Button("Clear");
+        clearBtn.setOnAction(e -> {
+            findingsArea.clear();
+            impressionArea.clear();
+            commentsArea.clear();
         });
 
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        actions.add(clearBtn);
-        actions.add(saveBtn);
+        Button saveBtn = new Button("Save to EMR");
+        saveBtn.setDefaultButton(true);
+        saveBtn.setOnAction(e -> saveToEmr());
 
-        root.add(left, BorderLayout.WEST);
-        root.add(center, BorderLayout.CENTER);
-        root.add(actions, BorderLayout.SOUTH);
-        setContentPane(root);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox actions = new HBox(10, spacer, clearBtn, saveBtn);
+        actions.setAlignment(Pos.CENTER_RIGHT);
+        actions.setPadding(new Insets(12, 0, 0, 0));
+        return actions;
     }
 
-    private JPanel labeledArea(String label, JTextArea area) {
-        area.setLineWrap(true);
-        area.setWrapStyleWord(true);
-        JScrollPane scroll = new JScrollPane(area);
-        scroll.setPreferredSize(new Dimension(400, area.getRows() * 20));
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(new JLabel(label), BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-        return panel;
-    }
-
-    private void addSnippetButton(JPanel parent, String label, String text) {
-        JButton btn = new JButton(label);
-        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btn.addActionListener(e -> appendSnippet(text));
-        parent.add(btn);
-        parent.add(Box.createVerticalStrut(5));
+    private void addSnippetButton(VBox parent, String label, String text) {
+        Button btn = new Button(label);
+        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.setOnAction(e -> appendSnippet(text));
+        VBox.setMargin(btn, new Insets(2, 0, 0, 0));
+        parent.getChildren().add(btn);
     }
 
     private void appendSnippet(String text) {
-        findingsArea.append(text + "\n");
+        findingsArea.appendText(text + "\n");
     }
 
     private void saveToEmr() {
-        IAITextAreaManager manager = IAIMain.getTextAreaManager();
-        if (manager == null || !manager.isReady()) {
-            JOptionPane.showMessageDialog(this, "EMR text areas are not ready.", "Not Ready", JOptionPane.WARNING_MESSAGE);
+        IAITextAreaManager manager = IAIMain.getManagerSafely()
+                .filter(IAITextAreaManager::isReady)
+                .orElse(null);
+
+        if (manager == null) {
+            showAlert(AlertType.WARNING, "Not Ready", "EMR text areas are not ready yet.");
             return;
         }
 
@@ -129,6 +166,15 @@ public class EkgQuickInterpreter extends JFrame {
         manager.focusArea(5);
         manager.insertLineIntoFocusedArea(stampedReport);
 
-        JOptionPane.showMessageDialog(this, "EKG report saved to EMR!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        showAlert(AlertType.INFORMATION, "Saved", "EKG report saved to EMR.");
+    }
+
+    private void showAlert(AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.initOwner(this);
+        alert.setHeaderText(null);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -25,6 +25,7 @@ import javafx.stage.Stage;
  */
 public class ThyroidPane extends VBox {
 
+    private static final Map<String, List<ThyroidEntry.Symptom>> SYMPTOM_GROUPS = buildSymptomGroups();
     private static final String[][] EXAM_SECTIONS = {
             {"Goiter Ruled", "Goiter ruled out", "Goiter ruled in Diffuse Enlargement",
                     "Goiter ruled in Nodular Enlargement", "Single Nodular Goiter", "Multiple Nodular Goiter"},
@@ -74,7 +75,6 @@ public class ThyroidPane extends VBox {
     private final ComboBox<ThyroidEntry.HyperEtiology> cmbHyperEtiology = new ComboBox<>();
     private final CheckBox chkHypoOvert = new CheckBox("Overt hypo");
     private final CheckBox chkHyperActive = new CheckBox("Active hyper");
-    private final MenuButton symptomDropdown = new MenuButton("Select symptoms...");
     private final Label symptomSummary = new Label("No symptoms selected");
 
     // Risk & Calculators (New)
@@ -145,17 +145,9 @@ public class ThyroidPane extends VBox {
         cmbHyperEtiology.getItems().addAll(ThyroidEntry.HyperEtiology.values());
         cmbHyperEtiology.setPromptText("Hyper etiology...");
 
-        symptomDropdown.setMaxWidth(Double.MAX_VALUE);
         symptomSummary.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
-        for (ThyroidEntry.Symptom symptom : ThyroidEntry.Symptom.values()) {
-            CheckBox cb = new CheckBox(symptom.getLabel());
-            symptomCheckboxes.put(symptom, cb);
-            CustomMenuItem item = new CustomMenuItem(cb);
-            item.setHideOnClick(false);
-            symptomDropdown.getItems().add(item);
-            cb.setOnAction(e -> updateSymptomSummary());
-        }
-        updateSymptomSummary();
+        symptomSummary.setWrapText(true);
+        symptomSummary.setMaxWidth(500);
 
         // Risk - ATA
         txtLymphCount.setPromptText("# Nodes");
@@ -232,12 +224,13 @@ public class ThyroidPane extends VBox {
     private void buildLayout() {
         TitledPane overviewPane = createOverviewPane();
         TitledPane riskPane = createRiskPane();
+        TitledPane symptomsPane = createSymptomsPane();
         TitledPane examPane = createExamPane();
         TitledPane labsPane = createLabsPane();
         TitledPane treatmentPane = createTreatmentPane();
         TitledPane followUpPane = createFollowUpPane();
 
-        Accordion accordion = new Accordion(overviewPane, riskPane, examPane, labsPane, treatmentPane, followUpPane);
+        Accordion accordion = new Accordion(overviewPane, riskPane, symptomsPane, examPane, labsPane, treatmentPane, followUpPane);
         accordion.setExpandedPane(overviewPane);
 
         getChildren().add(accordion);
@@ -278,11 +271,6 @@ public class ThyroidPane extends VBox {
         grid.add(catBox, 1, row, 4, 1);
         row++;
 
-        grid.add(new Label("Symptoms:"), 0, row);
-        VBox symptomBox = new VBox(6, symptomDropdown, symptomSummary);
-        grid.add(symptomBox, 1, row, 4, 1);
-        row++;
-
         Label conditionsLabel = new Label("Condition checklist:");
         conditionsLabel.setStyle("-fx-font-weight: bold;");
         grid.add(conditionsLabel, 0, row);
@@ -293,9 +281,45 @@ public class ThyroidPane extends VBox {
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPane.setPrefViewportHeight(320);
+        scrollPane.setPrefViewportHeight(420);
 
         return styledPane("1. Overview & Patient", scrollPane);
+    }
+
+    private TitledPane createSymptomsPane() {
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(10));
+
+        Label intro = new Label("Select common thyroid-related symptoms");
+        intro.setStyle("-fx-font-weight: bold;");
+
+        VBox symptomBox = new VBox(12);
+        symptomBox.setFillWidth(true);
+
+        SYMPTOM_GROUPS.forEach((group, symptoms) -> {
+            Label groupLabel = new Label(group);
+            groupLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #0d3d8f;");
+            GridPane grid = new GridPane();
+            grid.setHgap(12);
+            grid.setVgap(6);
+
+            for (int i = 0; i < symptoms.size(); i++) {
+                ThyroidEntry.Symptom symptom = symptoms.get(i);
+                CheckBox cb = symptomCheckboxes.computeIfAbsent(symptom, s -> new CheckBox(s.getLabel()));
+                cb.setOnAction(e -> updateSymptomSummary());
+
+                int col = i % 2;
+                int row = i / 2;
+                grid.add(cb, col, row);
+            }
+
+            symptomBox.getChildren().addAll(groupLabel, grid, new Separator());
+        });
+
+        updateSymptomSummary();
+
+        root.getChildren().addAll(intro, symptomBox);
+        return styledPane("3. Symptoms", root);
     }
 
     private TitledPane createRiskPane() {
@@ -375,7 +399,7 @@ public class ThyroidPane extends VBox {
         split.setPadding(new Insets(10));
         split.setFillHeight(true);
 
-        return styledPane("3. Physical Exam", split);
+        return styledPane("4. Physical Exam", split);
     }
 
     private TitledPane createLabsPane() {
@@ -389,7 +413,7 @@ public class ThyroidPane extends VBox {
         grid.addRow(2, new Label("TRAb"), txtTrab, new Label("Calcitonin"), txtCalcitonin);
         grid.addRow(3, new Label("Date"), dpLastLabDate);
 
-        return styledPane("4. Labs", grid);
+        return styledPane("5. Labs", grid);
     }
 
     private TitledPane createTreatmentPane() {
@@ -402,7 +426,7 @@ public class ThyroidPane extends VBox {
         grid.addRow(1, new Label("Antithyroid Drug"), txtAtdName, new Label("Dose (mg)"), txtAtdDose);
         grid.addRow(2, new Label("Beta Blocker"), txtBetaBlockerName, new Label("Dose"), txtBetaBlockerDose);
 
-        return styledPane("5. Treatment", grid);
+        return styledPane("6. Treatment", grid);
     }
 
     private TitledPane createFollowUpPane() {
@@ -421,7 +445,7 @@ public class ThyroidPane extends VBox {
             buttons,
             txtSummaryOutput
         );
-        return styledPane("6. Plan & Summary", box);
+        return styledPane("7. Plan & Summary", box);
     }
 
     // --- Logic & Actions ---
@@ -492,10 +516,8 @@ public class ThyroidPane extends VBox {
                 .map(e -> e.getKey().getLabel())
                 .toList();
         if (selected.isEmpty()) {
-            symptomDropdown.setText("Select symptoms...");
             symptomSummary.setText("No symptoms selected");
         } else {
-            symptomDropdown.setText("Selected (" + selected.size() + ")");
             symptomSummary.setText(String.join(", ", selected));
         }
     }
@@ -839,6 +861,33 @@ public class ThyroidPane extends VBox {
                 "Transient thyrotoxicosis of pregnancy"
         });
         return map;
+    }
+
+    private static Map<String, List<ThyroidEntry.Symptom>> buildSymptomGroups() {
+        Map<String, List<ThyroidEntry.Symptom>> groups = new LinkedHashMap<>();
+        List<ThyroidEntry.Symptom> hyper = new ArrayList<>();
+        List<ThyroidEntry.Symptom> hypo = new ArrayList<>();
+        List<ThyroidEntry.Symptom> general = new ArrayList<>();
+
+        for (ThyroidEntry.Symptom symptom : ThyroidEntry.Symptom.values()) {
+            String name = symptom.name();
+            if (name.startsWith("HYPER_")) {
+                hyper.add(symptom);
+            } else if (name.startsWith("HYPO_")) {
+                hypo.add(symptom);
+            } else {
+                general.add(symptom);
+            }
+        }
+
+        hyper.sort((a, b) -> a.getLabel().compareToIgnoreCase(b.getLabel()));
+        hypo.sort((a, b) -> a.getLabel().compareToIgnoreCase(b.getLabel()));
+        general.sort((a, b) -> a.getLabel().compareToIgnoreCase(b.getLabel()));
+
+        groups.put("Hyperthyroidism", hyper);
+        groups.put("Hypothyroidism", hypo);
+        groups.put("General / Other", general);
+        return groups;
     }
 
     private Node buildConditionChecklist() {
