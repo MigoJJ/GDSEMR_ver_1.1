@@ -1,16 +1,21 @@
 package com.emr.gds.main.thyroid;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.emr.gds.main.medication.controller.MainController;
+import com.emr.gds.util.StageSizing;
 import com.emr.gds.input.IAIMain;
 import com.emr.gds.input.IAITextAreaManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -76,6 +81,7 @@ public class ThyroidPane extends VBox {
     private final CheckBox chkHypoOvert = new CheckBox("Overt hypo");
     private final CheckBox chkHyperActive = new CheckBox("Active hyper");
     private final Label symptomSummary = new Label("No symptoms selected");
+    private final TextField txtSymptomNegatives = new TextField();
 
     // Risk & Calculators (New)
     private final Label lblLt4Est = new Label("Est. LT4: -");
@@ -115,6 +121,7 @@ public class ThyroidPane extends VBox {
     private final TextField txtAtdDose = new TextField();
     private final TextField txtBetaBlockerName = new TextField();
     private final TextField txtBetaBlockerDose = new TextField();
+    private final Button btnOpenEmrHelper = new Button("Open EMR Helper");
 
     // Follow-up
     private final ComboBox<String> cmbFollowUpInterval = new ComboBox<>();
@@ -148,6 +155,7 @@ public class ThyroidPane extends VBox {
         symptomSummary.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
         symptomSummary.setWrapText(true);
         symptomSummary.setMaxWidth(500);
+        txtSymptomNegatives.setPromptText("Recent negatives (e.g., denies tremor, weight loss)");
 
         // Risk - ATA
         txtLymphCount.setPromptText("# Nodes");
@@ -318,7 +326,8 @@ public class ThyroidPane extends VBox {
 
         updateSymptomSummary();
 
-        root.getChildren().addAll(intro, symptomBox);
+        VBox negativesBox = new VBox(4, new Label("Recent negatives / denials:"), txtSymptomNegatives);
+        root.getChildren().addAll(intro, symptomBox, symptomSummary, negativesBox);
         return styledPane("3. Symptoms", root);
     }
 
@@ -433,6 +442,9 @@ public class ThyroidPane extends VBox {
         grid.addRow(0, new Label("Levothyroxine (mcg)"), txtLt4Dose);
         grid.addRow(1, new Label("Antithyroid Drug"), txtAtdName, new Label("Dose (mg)"), txtAtdDose);
         grid.addRow(2, new Label("Beta Blocker"), txtBetaBlockerName, new Label("Dose"), txtBetaBlockerDose);
+        HBox helperBox = new HBox(btnOpenEmrHelper);
+        helperBox.setAlignment(Pos.CENTER_LEFT);
+        grid.add(helperBox, 0, 3, 4, 1);
 
         return styledPane("6. Treatment", grid);
     }
@@ -461,6 +473,8 @@ public class ThyroidPane extends VBox {
     private void configureActions() {
         // Real-time Weight Calc
         txtWeight.textProperty().addListener((obs, oldVal, newVal) -> updateDoseEst());
+        txtSymptomNegatives.textProperty().addListener((obs, oldVal, newVal) -> updateSymptomSummary());
+        btnOpenEmrHelper.setOnAction(e -> openEmrMedicationHelper());
 
         // Real-time TI-RADS
         cmbComp.setOnAction(e -> updateTiRads());
@@ -523,10 +537,39 @@ public class ThyroidPane extends VBox {
                 .filter(e -> e.getValue().isSelected())
                 .map(e -> e.getKey().getLabel())
                 .toList();
-        if (selected.isEmpty()) {
+        String negatives = (txtSymptomNegatives.getText() != null)
+                ? txtSymptomNegatives.getText().trim()
+                : "";
+        boolean hasNegatives = !negatives.isBlank();
+        if (selected.isEmpty() && !hasNegatives) {
             symptomSummary.setText("No symptoms selected");
-        } else {
-            symptomSummary.setText(String.join(", ", selected));
+            return;
+        }
+
+        List<String> parts = new ArrayList<>();
+        if (!selected.isEmpty()) {
+            parts.add("Positive: " + String.join(", ", selected));
+        }
+        if (hasNegatives) {
+            parts.add("Negatives: " + negatives);
+        }
+        symptomSummary.setText(String.join(" | ", parts));
+    }
+
+    private void openEmrMedicationHelper() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/emr/gds/main/medication/main.fxml"));
+            Parent root = loader.load();
+            MainController controller = loader.getController();
+            controller.setSelectedCategory("Thyroid");
+
+            Stage stage = new Stage();
+            stage.setTitle("EMR Helper – Thyroid");
+            stage.setScene(new Scene(root));
+            StageSizing.fitToScreen(stage, 0.8, 0.9, 1100, 700);
+            stage.show();
+        } catch (IOException ex) {
+            new Alert(Alert.AlertType.ERROR, "Unable to open EMR Helper: " + ex.getMessage()).showAndWait();
         }
     }
 
@@ -589,6 +632,7 @@ public class ThyroidPane extends VBox {
                 .map(Map.Entry::getKey)
                 .toList();
         entry.setSymptoms(selectedSymptoms);
+        entry.setSymptomNegatives(emptyToNull(txtSymptomNegatives.getText()));
 
         entry.setHypoEtiology(cmbHypoEtiology.getValue());
         entry.setHypoOvert(chkHypoOvert.isSelected());
@@ -649,9 +693,20 @@ public class ThyroidPane extends VBox {
                 lines.add("     |   " + entryGroup.getKey() + ": " + String.join("; ", entryGroup.getValue()));
             }
         }
-        if (!e.getSymptoms().isEmpty()) {
+        String negatives = (e.getSymptomNegatives() != null) ? e.getSymptomNegatives().trim() : "";
+        boolean hasNegatives = !negatives.isBlank();
+        if (!e.getSymptoms().isEmpty() || hasNegatives) {
             List<String> syms = e.getSymptoms().stream().map(ThyroidEntry.Symptom::getLabel).toList();
-            lines.add("     | Symptoms: " + String.join("; ", syms));
+            StringBuilder symptomLine = new StringBuilder("     | Symptoms: ");
+            if (!syms.isEmpty()) {
+                symptomLine.append(String.join("; ", syms));
+            } else {
+                symptomLine.append("None reported");
+            }
+            if (hasNegatives) {
+                symptomLine.append("; Recent negatives: ").append(negatives);
+            }
+            lines.add(symptomLine.toString());
         }
 
         List<String> statusParts = new ArrayList<>();

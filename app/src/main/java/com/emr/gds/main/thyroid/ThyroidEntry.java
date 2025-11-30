@@ -110,6 +110,7 @@ public class ThyroidEntry implements Serializable {
     private VisitType visitType;
     private List<MainCategory> categories = new ArrayList<>();
     private List<Symptom> symptoms = new ArrayList<>();
+    private String symptomNegatives;
 
     // Hypo / Hyper details
     private HypoEtiology hypoEtiology;
@@ -183,6 +184,7 @@ public class ThyroidEntry implements Serializable {
         this.visitType = builder.visitType;
         this.categories = builder.categories;
         this.symptoms = builder.symptoms;
+        this.symptomNegatives = builder.symptomNegatives;
         this.hypoEtiology = builder.hypoEtiology;
         this.hypoOvert = builder.hypoOvert;
         this.hyperEtiology = builder.hyperEtiology;
@@ -239,6 +241,8 @@ public class ThyroidEntry implements Serializable {
 
     public List<Symptom> getSymptoms() { return symptoms; }
     public void setSymptoms(List<Symptom> symptoms) { this.symptoms = (symptoms != null) ? symptoms : new ArrayList<>(); }
+    public String getSymptomNegatives() { return symptomNegatives; }
+    public void setSymptomNegatives(String symptomNegatives) { this.symptomNegatives = symptomNegatives; }
 
     public HypoEtiology getHypoEtiology() { return hypoEtiology; }
     public void setHypoEtiology(HypoEtiology hypoEtiology) { this.hypoEtiology = hypoEtiology; }
@@ -436,6 +440,7 @@ public class ThyroidEntry implements Serializable {
         private VisitType visitType;
         private List<MainCategory> categories = new ArrayList<>();
         private List<Symptom> symptoms = new ArrayList<>();
+        private String symptomNegatives;
         private HypoEtiology hypoEtiology;
         private Boolean hypoOvert;
         private HyperEtiology hyperEtiology;
@@ -507,6 +512,11 @@ public class ThyroidEntry implements Serializable {
 
         public Builder symptoms(List<Symptom> symptoms) {
             this.symptoms = (symptoms != null) ? symptoms : new ArrayList<>();
+            return this;
+        }
+
+        public Builder symptomNegatives(String symptomNegatives) {
+            this.symptomNegatives = symptomNegatives;
             return this;
         }
 
