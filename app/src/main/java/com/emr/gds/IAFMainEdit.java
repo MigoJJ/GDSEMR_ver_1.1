@@ -329,7 +329,7 @@ public class IAFMainEdit extends JFrame {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new java.awt.datatransfer.StringSelection(text), null);
             JOptionPane.showMessageDialog(this, "Content copied to clipboard.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
-        dispose();
+//        dispose();
     }
 
     // --- Template Parsing & Formatting ---
