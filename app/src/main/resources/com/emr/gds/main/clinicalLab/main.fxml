@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.emr.gds.main.clinicalLab.controller.ClinicalLabController"
+            prefHeight="800.0" prefWidth="1200.0">
+
+    <!-- LEFT PANEL: Selected Items -->
+    <left>
+        <VBox style="-fx-background-color: linear-gradient(to bottom, #f8f9fa, #e9ecef); -fx-padding: 15; -fx-spacing: 12; -fx-pref-width: 300; -fx-border-color: #dee2e6; -fx-border-width: 0 1 0 0;">
+            <Label text="Selected Tests" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #495057;"/>
+            <ListView fx:id="selectedItemsList" VBox.vgrow="ALWAYS" 
+                      style="-fx-background-color: white; -fx-border-color: #ced4da; -fx-border-radius: 4;"/>
+            
+            <Button text="📋 Copy Selected" onAction="#copySelected" maxWidth="1.7976931348623157E308" 
+                    style="-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;"/>
+            <Button text="🗑️ Clear Selection" onAction="#clearSelection" maxWidth="1.7976931348623157E308" 
+                    style="-fx-background-color: #ffc107; -fx-text-fill: #212529; -fx-font-weight: bold; -fx-padding: 8;"/>
+        </VBox>
+    </left>
+
+    <!-- CENTER PANEL: Table and Toolbar -->
+    <center>
+        <BorderPane>
+            <top>
+                <ToolBar style="-fx-background-color: linear-gradient(to bottom, #ffffff, #f8f9fa); -fx-padding: 10;">
+                    <TextField fx:id="searchField" promptText="Search test name or category..." prefWidth="300"/>
+                    <Button text="🔍 Search" onAction="#handleSearch" style="-fx-background-color: #007bff; -fx-text-fill: white;"/>
+                    <Separator/>
+                    <Button text="🔄 Refresh" onAction="#loadData" style="-fx-background-color: #6c757d; -fx-text-fill: white;"/>
+                </ToolBar>
+            </top>
+            <center>
+                <TableView fx:id="labTable" style="-fx-background-color: white; -fx-border-color: #dee2e6;">
+                    <columns>
+                        <TableColumn fx:id="colCategory" text="Category" prefWidth="150"/>
+                        <TableColumn fx:id="colTestName" text="Test Name" prefWidth="250"/>
+                        <TableColumn fx:id="colUnit" text="Unit" prefWidth="100"/>
+                        <TableColumn fx:id="colMaleRef" text="Male Ref Range" prefWidth="150"/>
+                        <TableColumn fx:id="colFemaleRef" text="Female Ref Range" prefWidth="150"/>
+                    </columns>
+                </TableView>
+            </center>
+        </BorderPane>
+    </center>
+
+    <!-- RIGHT PANEL: Details / Info -->
+    <right>
+        <VBox fx:id="detailsPanel" style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-spacing: 10; -fx-pref-width: 320; -fx-border-color: #dee2e6; -fx-border-width: 0 0 0 1;">
+            <Label text="Test Details" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+            
+            <GridPane hgap="10" vgap="10">
+                <Label text="Test Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+                <Label fx:id="lblTestName" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0" wrapText="true"/>
+
+                <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+                <Label fx:id="lblCategory" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Label text="Unit:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+                <Label fx:id="lblUnit" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            </GridPane>
+
+            <Separator style="-fx-padding: 10 0;"/>
+
+            <Label text="Reference Ranges" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+            
+            <VBox style="-fx-background-color: white; -fx-padding: 10; -fx-border-color: #ced4da; -fx-border-radius: 4;">
+                <Label text="Male:" style="-fx-font-weight: bold; -fx-text-fill: #007bff;"/>
+                <Label fx:id="lblMaleRange" text="-" wrapText="true"/>
+                <Label fx:id="lblMaleRef" text="-" style="-fx-font-style: italic; -fx-text-fill: #6c757d;"/>
+                
+                <Region prefHeight="10"/>
+                
+                <Label text="Female:" style="-fx-font-weight: bold; -fx-text-fill: #e83e8c;"/>
+                <Label fx:id="lblFemaleRange" text="-" wrapText="true"/>
+                <Label fx:id="lblFemaleRef" text="-" style="-fx-font-style: italic; -fx-text-fill: #6c757d;"/>
+            </VBox>
+            
+            <Button text="➕ Add to Selection" onAction="#addToSelection" maxWidth="1.7976931348623157E308" 
+                    style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10; -fx-margin: 20 0 0 0;"/>
+
+        </VBox>
+    </right>
+
+</BorderPane>

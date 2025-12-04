@@ -412,12 +412,18 @@ public class IttiaApp extends Application {
             Button thyroidPregButton = new Button("Thyroid Pregnancy");
             thyroidPregButton.getStyleClass().add("button-accent");
             thyroidPregButton.setOnAction(e -> ThyroidLauncher.openThyroidPregnancy());
+
+            Button labCodeButton = new Button("LabCode");
+            labCodeButton.getStyleClass().add("button-accent");
+            labCodeButton.setOnAction(e -> com.emr.gds.main.clinicalLab.ClinicalLabLauncher.open());
             
             bottomBar.getItems().add(new Separator());
             bottomBar.getItems().add(categoryButton);
             bottomBar.getItems().add(new Separator());
             bottomBar.getItems().add(thyroidButton);
             bottomBar.getItems().add(thyroidPregButton);
+            bottomBar.getItems().add(new Separator());
+            bottomBar.getItems().add(labCodeButton);
             
             return bottomBar;
         } catch (Exception e) {
