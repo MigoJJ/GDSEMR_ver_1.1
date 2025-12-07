@@ -13,6 +13,8 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 
+import javafx.stage.Stage;
+
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -35,15 +37,19 @@ public class ClinicalLabController implements Initializable {
     @FXML private TableColumn<ClinicalLabItem, String> colComments;
 
     // Right Panel (Details)
-    @FXML private Label lblTestName;
-    @FXML private Label lblCategory;
+    @FXML private TextField editTestName;
+    @FXML private TextField editCategory;
     @FXML private Label lblUnit;
     @FXML private Label lblMaleRange;
     @FXML private Label lblMaleRef;
     @FXML private Label lblFemaleRange;
     @FXML private Label lblFemaleRef;
-    @FXML private Label lblCodes;
-    @FXML private Label lblComments;
+    @FXML private TextField editCodes;
+    @FXML private TextArea editComments;
+    @FXML private Button editButton;
+    @FXML private Button saveButton;
+    @FXML private Button cancelButton;
+
 
     private final ClinicalLabDatabase database = new ClinicalLabDatabase();
     private final ObservableList<ClinicalLabItem> masterData = FXCollections.observableArrayList();
@@ -55,6 +61,7 @@ public class ClinicalLabController implements Initializable {
         setupSelectionModel();
         selectedItemsList.setItems(selectedItems);
         loadData();
+        setEditable(false);
     }
 
     private void setupTable() {
@@ -97,8 +104,8 @@ public class ClinicalLabController implements Initializable {
     }
 
     private void showDetails(ClinicalLabItem item) {
-        lblTestName.setText(item.getTestName());
-        lblCategory.setText(item.getCategory());
+        editTestName.setText(item.getTestName());
+        editCategory.setText(item.getCategory());
         lblUnit.setText(item.getUnit());
 
         String mLow = item.getMaleRangeLow() != null ? String.valueOf(item.getMaleRangeLow()) : "-";
@@ -111,20 +118,20 @@ public class ClinicalLabController implements Initializable {
         lblFemaleRange.setText(fLow + " - " + fHigh);
         lblFemaleRef.setText(item.getFemaleReferenceRange() != null ? item.getFemaleReferenceRange() : "");
         
-        lblCodes.setText(item.getCodes() != null ? item.getCodes() : "-");
-        lblComments.setText(item.getComments() != null ? item.getComments() : "-");
+        editCodes.setText(item.getCodes() != null ? item.getCodes() : "-");
+        editComments.setText(item.getComments() != null ? item.getComments() : "-");
     }
 
     private void clearDetails() {
-        lblTestName.setText("-");
-        lblCategory.setText("-");
+        editTestName.setText("-");
+        editCategory.setText("-");
         lblUnit.setText("-");
         lblMaleRange.setText("-");
         lblMaleRef.setText("-");
         lblFemaleRange.setText("-");
         lblFemaleRef.setText("-");
-        lblCodes.setText("-");
-        lblComments.setText("-");
+        editCodes.setText("-");
+        editComments.setText("-");
     }
 
     @FXML
@@ -138,50 +145,56 @@ public class ClinicalLabController implements Initializable {
             alert.showAndWait();
             return;
         }
-
-        Dialog<Boolean> dialog = new Dialog<>();
-        dialog.setTitle("Edit Item");
-        dialog.setHeaderText("Edit Codes and Comments for " + selected.getTestName());
-
-        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField codesField = new TextField(selected.getCodes());
-        codesField.setPromptText("Enter codes");
-        TextArea commentsArea = new TextArea(selected.getComments());
-        commentsArea.setPromptText("Enter comments");
-        commentsArea.setPrefRowCount(3);
-
-        grid.add(new Label("Codes:"), 0, 0);
-        grid.add(codesField, 1, 0);
-        grid.add(new Label("Comments:"), 0, 1);
-        grid.add(commentsArea, 1, 1);
-
-        dialog.getDialogPane().setContent(grid);
-
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == saveButtonType) {
-                selected.setCodes(codesField.getText());
-                selected.setComments(commentsArea.getText());
-                return true;
-            }
-            return null;
-        });
-
-        Optional<Boolean> result = dialog.showAndWait();
-        result.ifPresent(success -> {
-            if (success) {
-                database.updateItem(selected);
-                labTable.refresh();
-                showDetails(selected); // Refresh details view
-            }
-        });
+        setEditable(true);
     }
+
+    @FXML
+    private void handleSave() {
+        ClinicalLabItem selected = labTable.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            selected.setTestName(editTestName.getText());
+            selected.setCategory(editCategory.getText());
+            selected.setCodes(editCodes.getText());
+            selected.setComments(editComments.getText());
+            database.updateItem(selected);
+            labTable.refresh();
+            showDetails(selected);
+        }
+        setEditable(false);
+    }
+
+    @FXML
+    private void handleCancel() {
+        ClinicalLabItem selected = labTable.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            showDetails(selected);
+        }
+        setEditable(false);
+    }
+
+    private void setEditable(boolean editable) {
+        editTestName.setEditable(editable);
+        editCategory.setEditable(editable);
+        editCodes.setEditable(editable);
+        editComments.setEditable(editable);
+
+        if (editable) {
+            editTestName.setStyle("-fx-background-color: white; -fx-border-color: #ced4da; -fx-border-radius: 4;");
+            editCategory.setStyle("-fx-background-color: white; -fx-border-color: #ced4da; -fx-border-radius: 4;");
+            editCodes.setStyle("-fx-background-color: white; -fx-border-color: #ced4da; -fx-border-radius: 4;");
+            editComments.setStyle("-fx-background-color: white; -fx-border-color: #ced4da; -fx-border-radius: 4;");
+        } else {
+            editTestName.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+            editCategory.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+            editCodes.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+            editComments.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+        }
+
+        editButton.setVisible(!editable);
+        saveButton.setVisible(editable);
+        cancelButton.setVisible(editable);
+    }
+
 
     @FXML
     private void handleAdd() {
@@ -203,14 +216,6 @@ public class ClinicalLabController implements Initializable {
         testNameField.setPromptText("Test Name");
         TextField unitField = new TextField();
         unitField.setPromptText("Unit");
-        TextField maleRangeLowField = new TextField();
-        maleRangeLowField.setPromptText("Male Range Low");
-        TextField maleRangeHighField = new TextField();
-        maleRangeHighField.setPromptText("Male Range High");
-        TextField femaleRangeLowField = new TextField();
-        femaleRangeLowField.setPromptText("Female Range Low");
-        TextField femaleRangeHighField = new TextField();
-        femaleRangeHighField.setPromptText("Female Range High");
         TextField maleRefRangeField = new TextField();
         maleRefRangeField.setPromptText("Male Reference Range");
         TextField femaleRefRangeField = new TextField();
@@ -227,42 +232,29 @@ public class ClinicalLabController implements Initializable {
         grid.add(testNameField, 1, 1);
         grid.add(new Label("Unit:"), 0, 2);
         grid.add(unitField, 1, 2);
-        grid.add(new Label("Male Range Low:"), 0, 3);
-        grid.add(maleRangeLowField, 1, 3);
-        grid.add(new Label("Male Range High:"), 0, 4);
-        grid.add(maleRangeHighField, 1, 4);
-        grid.add(new Label("Female Range Low:"), 0, 5);
-        grid.add(femaleRangeLowField, 1, 5);
-        grid.add(new Label("Female Range High:"), 0, 6);
-        grid.add(femaleRangeHighField, 1, 6);
-        grid.add(new Label("Male Ref Range:"), 0, 7);
-        grid.add(maleRefRangeField, 1, 7);
-        grid.add(new Label("Female Ref Range:"), 0, 8);
-        grid.add(femaleRefRangeField, 1, 8);
-        grid.add(new Label("Codes:"), 0, 9);
-        grid.add(codesField, 1, 9);
-        grid.add(new Label("Comments:"), 0, 10);
-        grid.add(commentsArea, 1, 10);
+        grid.add(new Label("Male Ref Range:"), 0, 3);
+        grid.add(maleRefRangeField, 1, 3);
+        grid.add(new Label("Female Ref Range:"), 0, 4);
+        grid.add(femaleRefRangeField, 1, 4);
+        grid.add(new Label("Codes:"), 0, 5);
+        grid.add(codesField, 1, 5);
+        grid.add(new Label("Comments:"), 0, 6);
+        grid.add(commentsArea, 1, 6);
 
         dialog.getDialogPane().setContent(grid);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == addButtonType) {
                 try {
-                    Double maleLow = maleRangeLowField.getText().isEmpty() ? null : Double.parseDouble(maleRangeLowField.getText());
-                    Double maleHigh = maleRangeHighField.getText().isEmpty() ? null : Double.parseDouble(maleRangeHighField.getText());
-                    Double femaleLow = femaleRangeLowField.getText().isEmpty() ? null : Double.parseDouble(femaleRangeLowField.getText());
-                    Double femaleHigh = femaleRangeHighField.getText().isEmpty() ? null : Double.parseDouble(femaleRangeHighField.getText());
-
                     return new ClinicalLabItem(
                         0, // ID will be set by the database
                         categoryField.getText(),
                         testNameField.getText(),
                         unitField.getText(),
-                        maleLow,
-                        maleHigh,
-                        femaleLow,
-                        femaleHigh,
+                        null,
+                        null,
+                        null,
+                        null,
                         maleRefRangeField.getText(),
                         femaleRefRangeField.getText(),
                         codesField.getText(),
@@ -337,5 +329,32 @@ public class ClinicalLabController implements Initializable {
     @FXML
     private void clearSelection() {
         selectedItems.clear();
+    }
+
+    @FXML
+    private void handleSaveToEmr() {
+        ClinicalLabItem selected = labTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText("No Item Selected");
+            alert.setContentText("Please select an item to save to EMR.");
+            alert.showAndWait();
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Lab Item: ").append(selected.getTestName()).append(" (").append(selected.getCategory()).append(")\n");
+        sb.append("  Male Range: ").append(selected.getMaleReferenceRange()).append("\n");
+        sb.append("  Female Range: ").append(selected.getFemaleReferenceRange()).append("\n");
+        sb.append("  Codes: ").append(selected.getCodes()).append("\n");
+
+        com.emr.gds.input.IAIMain.getTextAreaManager().appendTextToSection(9, sb.toString());
+    }
+
+    @FXML
+    private void handleQuit() {
+        Stage stage = (Stage) labTable.getScene().getWindow();
+        stage.close();
     }
 }

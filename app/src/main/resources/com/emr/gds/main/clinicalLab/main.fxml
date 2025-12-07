@@ -21,6 +21,10 @@
                     style="-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;"/>
             <Button text="🗑️ Clear Selection" onAction="#clearSelection" maxWidth="1.7976931348623157E308" 
                     style="-fx-background-color: #ffc107; -fx-text-fill: #212529; -fx-font-weight: bold; -fx-padding: 8;"/>
+            <Button text="📋 Save to EMR" onAction="#handleSaveToEmr" maxWidth="1.7976931348623157E308"
+                    style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;"/>
+            <Button text="Quit" onAction="#handleQuit" maxWidth="1.7976931348623157E308"
+                    style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;"/>
         </VBox>
     </left>
 
@@ -58,19 +62,19 @@
             
             <GridPane hgap="10" vgap="10">
                 <Label text="Test Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
-                <Label fx:id="lblTestName" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0" wrapText="true"/>
+                <TextField fx:id="editTestName" editable="false" style="-fx-background-color: transparent; -fx-border-color: transparent;" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
                 <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
-                <Label fx:id="lblCategory" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <TextField fx:id="editCategory" editable="false" style="-fx-background-color: transparent; -fx-border-color: transparent;" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
                 <Label text="Unit:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
                 <Label fx:id="lblUnit" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
                 <Label text="Codes:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight: bold;"/>
-                <Label fx:id="lblCodes" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" wrapText="true"/>
+                <TextField fx:id="editCodes" editable="false" style="-fx-background-color: transparent; -fx-border-color: transparent;" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
                 <Label text="Comments:" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-font-weight: bold;"/>
-                <Label fx:id="lblComments" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4" wrapText="true"/>
+                <TextArea fx:id="editComments" editable="false" style="-fx-background-color: transparent; -fx-border-color: transparent;" GridPane.columnIndex="1" GridPane.rowIndex="4" wrapText="true" prefRowCount="2"/>
             </GridPane>
 
             <Separator style="-fx-padding: 10 0;"/>
@@ -89,8 +93,14 @@
                 <Label fx:id="lblFemaleRef" text="-" style="-fx-font-style: italic; -fx-text-fill: #6c757d;"/>
             </VBox>
             
-            <Button text="✏️ Edit" onAction="#handleEdit" maxWidth="1.7976931348623157E308" 
-                    style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8; -fx-margin: 20 0 0 0;"/>
+            <HBox spacing="10" style="-fx-margin: 20 0 0 0;">
+                <Button fx:id="editButton" text="✏️ Edit" onAction="#handleEdit" maxWidth="1.7976931348623157E308" 
+                        style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;"/>
+                <Button fx:id="saveButton" text="💾 Save" onAction="#handleSave" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;" visible="false"/>
+                <Button fx:id="cancelButton" text="❌ Cancel" onAction="#handleCancel" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;" visible="false"/>
+            </HBox>
 
             <Button text="➕ Add New" onAction="#handleAdd" maxWidth="1.7976931348623157E308"
                     style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;"/>
